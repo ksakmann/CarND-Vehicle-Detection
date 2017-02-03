@@ -1,7 +1,5 @@
 ## Vehicle Detection
 
----
-
 **Project Description**
 
 The goals / steps of this project are the following:
@@ -23,14 +21,22 @@ The goals / steps of this project are the following:
 [image7]: ./examples/output_bboxes.png
 [video1]: ./project_video.mp4
 
-## [Rubric](https://review.udacity.com/#!/rubrics/513/view) Points
-###Here I will consider the rubric points individually and describe how I addressed each point in my implementation.  
+### Please see the [rubric](https://review.udacity.com/#!/rubrics/513/view) points
 
 ---
+### Data Acquisition and Preprocessing
+Labeled images were taken from the GTI vehicle image database [GTI](http://www.gti.ssr.upm.es/data/Vehicle_database.html), the [KITTI](http://www.cvlibs.net/datasets/kitti/) 
+vision benchmark suite, and examples extracted from the project video itself. All images are 64x64 pixels. 
+A third [data set](https://github.com/udacity/self-driving-car/tree/master/annotations) released by Udacity was not used here. 
+In total there are 8792 images of vehicles and 9666 images of non vehicles. Images of the GTI data set are taken from video sequences which needed
+to be addressed in the separation into training and test set as follows. The last 10% of all images in every folder were therefore used as a test set. 
+The data is slightly unbalanced with about 10% more "not a car" images than "car" images.
 
-###Histogram of Oriented Gradients (HOG)
 
-####1. Explain how (and identify where in your code) you extracted HOG features from the training images.
+
+### Histogram of Oriented Gradients (HOG)
+
+#### 1. Explain how (and identify where in your code) you extracted HOG features from the training images.
 
 The code for this step is contained in the first code cell of the IPython notebook (or in lines # through # of the file called `some_file.py`).  
 
