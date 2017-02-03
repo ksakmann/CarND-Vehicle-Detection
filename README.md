@@ -12,7 +12,7 @@ The goals / steps of this project are the following:
 * Estimate a bounding box for vehicles detected.
 
 [//]: # (Image References)
-[image1]: ./examples/car_not_car.png
+[image1]: ./images/car_notcar.png
 [image2]: ./examples/HOG_example.jpg
 [image3]: ./examples/sliding_windows.jpg
 [image4]: ./examples/sliding_window.jpg
@@ -28,10 +28,13 @@ The goals / steps of this project are the following:
 Labeled images were taken from the GTI vehicle image database [GTI](http://www.gti.ssr.upm.es/data/Vehicle_database.html), the [KITTI](http://www.cvlibs.net/datasets/kitti/) 
 vision benchmark suite, and examples extracted from the project video itself. All images are 64x64 pixels. 
 A third [data set](https://github.com/udacity/self-driving-car/tree/master/annotations) released by Udacity was not used here. 
-In total there are 8792 images of vehicles and 9666 images of non vehicles. Images of the GTI data set are taken from video sequences which needed
+In total there are 8792 images of vehicles and 9666 images of non vehicles. 
+Thus the data is slightly unbalanced with about 10% more non vehicle images than vehicle images.
+Images of the GTI data set are taken from video sequences which needed
 to be addressed in the separation into training and test set as follows. The last 10% of all images in every folder were therefore used as a test set. 
-The data is slightly unbalanced with about 10% more "not a car" images than "car" images.
+Shown below is an example of each class (vehicle, non-vehicle) of the data set. The data set is explored in the notebook `exploration.ipynb` 
 
+![sample][image1]
 
 
 ### Histogram of Oriented Gradients (HOG)
@@ -40,9 +43,6 @@ The data is slightly unbalanced with about 10% more "not a car" images than "car
 
 The code for this step is contained in the first code cell of the IPython notebook (or in lines # through # of the file called `some_file.py`).  
 
-I started by reading in all the `vehicle` and `non-vehicle` images.  Here is an example of one of each of the `vehicle` and `non-vehicle` classes:
-
-![alt text][image1]
 
 I then explored different color spaces and different `skimage.hog()` parameters (`orientations`, `pixels_per_cell`, and `cells_per_block`).  I grabbed random images from each of the two classes and displayed them to get a feel for what the `skimage.hog()` output looks like.
 
