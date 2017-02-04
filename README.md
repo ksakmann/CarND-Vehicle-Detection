@@ -13,7 +13,7 @@ The goals / steps of this project are the following:
 
 [//]: # (Image References)
 [image1]: ./images/car_notcar.png
-[image2]: ./examples/HOG_example.jpg
+[image2]: ./images/HOG_features_HLS.png
 [image3]: ./examples/sliding_windows.jpg
 [image4]: ./examples/sliding_window.jpg
 [image5]: ./examples/bboxes_and_heat.png
@@ -24,14 +24,14 @@ The goals / steps of this project are the following:
 ### Please see the [rubric](https://review.udacity.com/#!/rubrics/513/view) points
 
 ---
-### Data Acquisition and Preprocessing
+### Data Exploration
 Labeled images were taken from the GTI vehicle image database [GTI](http://www.gti.ssr.upm.es/data/Vehicle_database.html), the [KITTI](http://www.cvlibs.net/datasets/kitti/) 
 vision benchmark suite, and examples extracted from the project video itself. All images are 64x64 pixels. 
 A third [data set](https://github.com/udacity/self-driving-car/tree/master/annotations) released by Udacity was not used here. 
 In total there are 8792 images of vehicles and 9666 images of non vehicles. 
 Thus the data is slightly unbalanced with about 10% more non vehicle images than vehicle images.
 Images of the GTI data set are taken from video sequences which needed
-to be addressed in the separation into training and test set as follows. The last 10% of all images in every folder were therefore used as a test set. 
+to be addressed in the separation into training and test set.
 Shown below is an example of each class (vehicle, non-vehicle) of the data set. The data set is explored in the notebook `exploration.ipynb` 
 
 ![sample][image1]
@@ -41,15 +41,16 @@ Shown below is an example of each class (vehicle, non-vehicle) of the data set. 
 
 #### 1. Explain how (and identify where in your code) you extracted HOG features from the training images.
 
-The code for this step is contained in the first code cell of the IPython notebook (or in lines # through # of the file called `some_file.py`).  
+Due to the temporal correlation in the video sequences, the training set was divided as follows: the first 70% of any folder containing images 
+was assigned to be the training set, the next 20% the validation set and the last 10% the test set. In the process of generating HOG features 
+all training, validation and test images were normalized together and subsequently split again into training, test and validation set. 
+Each set was shuffled individually. The code for this step is contained in the first six cells of the IPython notebook `HOG_Classify.ipynb`.  
+I explored different color spaces and different `skimage.hog()` parameters (`orientations`, `pixels_per_cell`, and `cells_per_block`).  
+I grabbed random images from each of the two classes and displayed them to get a feel for what the `skimage.hog()` output looks like.
+Here is an example using the `HLS` color space and HOG parameters of `orientations=9`, `pixels_per_cell=(8, 8)` and `cells_per_block=(2, 2)`:
 
 
-I then explored different color spaces and different `skimage.hog()` parameters (`orientations`, `pixels_per_cell`, and `cells_per_block`).  I grabbed random images from each of the two classes and displayed them to get a feel for what the `skimage.hog()` output looks like.
-
-Here is an example using the `YCrCb` color space and HOG parameters of `orientations=8`, `pixels_per_cell=(8, 8)` and `cells_per_block=(2, 2)`:
-
-
-![alt text][image2]
+![HOGchannels][image2]
 
 ####2. Explain how you settled on your final choice of HOG parameters.
 
