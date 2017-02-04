@@ -43,25 +43,31 @@ Shown below is an example of each class (vehicle, non-vehicle) of the data set. 
 
 Due to the temporal correlation in the video sequences, the training set was divided as follows: the first 70% of any folder containing images 
 was assigned to be the training set, the next 20% the validation set and the last 10% the test set. In the process of generating HOG features 
-all training, validation and test images were normalized together and subsequently split again into training, test and validation set. 
-Each set was shuffled individually. The code for this step is contained in the first six cells of the IPython notebook `HOG_Classify.ipynb`.  
-I explored different color spaces and different `skimage.hog()` parameters (`orientations`, `pixels_per_cell`, and `cells_per_block`).  
-I grabbed random images from each of the two classes and displayed them to get a feel for what the `skimage.hog()` output looks like.
-Here is an example using the `HLS` color space and HOG parameters of `orientations=9`, `pixels_per_cell=(8, 8)` and `cells_per_block=(2, 2)`:
-
+all training, validation and test images were normalized together and subsequently split again into training, test and validation set. Each set was shuffled individually. The code for this step is contained in the first six cells of the IPython notebook `HOG_Classify.ipynb`. I explored different color spaces and different `skimage.hog()` parameters (`orientations`, `pixels_per_cell`, and `cells_per_block`).  
+I selected a few images from each of the two classes and displayed them to see  what the `skimage.hog()` output looks like. Here is an example using the `HLS` color space and HOG parameters of `orient=9`, `pixels_per_cell=(8, 8)` and `cells_per_block=(2, 2)`:
 
 ![HOGchannels][image2]
 
 ####2. Explain how you settled on your final choice of HOG parameters.
 
-I tried various combinations of parameters and...
+I went through a number of different combinations of color spaces and HOG parameters and trained  a linear SVM using different combinations of HOG features extracted 
+from the color channels. For HLS color space the L-channel appears to be most important, followed by the S channel. I discarded RGB color space, 
+for its undesirable properties under changing light conditions. YUV and YCrCb also provided good results, but proved to be unstable when all channels were used. 
+Ther was relatively little variation in the final accuracy when running the SVM with some of the individual channels of HSV,HLS and LUV. 
+I finally settled with HLS space and a low value of `pixels_per_cell=(8,8)`. Using larger values of than `orient=9` did not have a striking effect and only increased the feature vector. 
+Similarly, using values larger than `cells_per_block=(2,2)` did not improve results, which is why these values were chosen. 
 
 ####3. Describe how (and identify where in your code) you trained a classifier using your selected HOG features (and color features if you used them).
 
-I trained a linear SVM using...
+I trained a linear SVM using all channels of images converted to HLS space. I included spatial features color features as well as all three HLS channels. 
+The final feature vector has a length of 5292, most of which are HOG features. When trained on the training set this resulted in a validation accuracy of 96.4% and a test accuracy of 97.3%. The average time for a prediction (average over a hundred predictions) turned out to be about 5ms on an I7 processor, 
+thus allowing a theoretical bandwidth of  200Hz. A realtime application is therfore only feasible
+if several parts of the image are examined in parallel. The sliding window search  described below is an embarrassingly parallel task and corresponding speedups are expected, 
+but implementing it is beyond the scope of this project.   Using just the L channel reduced the feature vector to about a third, while  test and validation accuracy dropped to about 94.5% each.
+Unfortunately, the average time for a prediction remained about 5ms. 
+The classifier used was `LinearSVC` taken from the ´scikit-learn´ package. 
 
 ###Sliding Window Search
-
 ####1. Describe how (and identify where in your code) you implemented a sliding window search.  How did you decide what scales to search and how much to overlap windows?
 
 I decided to search random window positions at random scales all over the image and came up with this (ok just kidding I didn't actually ;):
