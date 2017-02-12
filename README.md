@@ -17,9 +17,9 @@ The goals / steps of this project are the following:
 [image3]: ./images/false_positives.png
 [image4]: ./images/sliding_windows.png
 [image5]: ./images/detection_example.png
-[image6]: ./examples/labels_map.png
+[image6]: ./images/heatmap.png
 [image7]: ./examples/output_bboxes.png
-[video1]: ./project_video.mp4
+[video1]: ./output_images/processed_project_video.mp4
 
 ### Please see the [rubric](https://review.udacity.com/#!/rubrics/513/view) points
 
@@ -99,18 +99,23 @@ significant portion is visible.
 
 ####1. Provide a link to your final video output.  Your pipeline should perform reasonably well on the entire project video (somewhat wobbly or unstable bounding boxes are ok as long as you are identifying the vehicles most of the time with minimal false positives.)
 
-Here's a [link to my video result](./project_video.mp4)
+Please find the final result of the video processing pipeline [here](./output_images/processed_project_video.mp4)
 
 
 ####2. Describe how (and identify where in your code) you implemented some kind of filter for false positives and some method for combining overlapping bounding boxes.
 
-I recorded the positions of positive detections in each frame of the video.  From the positive detections I created a heatmap and then thresholded that map to identify vehicle positions.  I then used `scipy.ndimage.measurements.label()` to identify individual blobs in the heatmap.  I then assumed each blob corresponded to a vehicle.  I constructed bounding boxes to cover the area of each blob detected.  
+In the file `search_classify.ipynb` the class `BoundingBoxes` implements a FIFO queue that stores the bounding boxes of the last `n` frames. 
+For every frame the (possbly empty) list of detected bounding boxes gets added to the beginning of the queue, while the oldest list of bounding boxes falls out. 
+This queue is then used in the processing of the video and always contains the boundnig boxes of the last `n=` frames. I used  
+of positive detections in each frame of the video. From the positive detections I created a heatmap and then thresholded that map to identify vehicle positions.  
+I then used `scipy.ndimage.measurements.label()` to identify individual blobs in the heatmap.  I then assumed each blob corresponded to a vehicle.  Finally I 
+constructed bounding boxes to cover the area of each blob detected.  
 
 Here's an example result showing the heatmap from a series of frames of video, the result of `scipy.ndimage.measurements.label()` and the bounding boxes then overlaid on the last frame of video:
 
 ### Here are six frames and their corresponding heatmaps:
 
-![alt text][image5]
+![heatmap][image6]
 
 ### Here is the output of `scipy.ndimage.measurements.label()` on the integrated heatmap from all six frames:
 ![alt text][image6]
