@@ -19,7 +19,7 @@ The goals / steps of this project are the following:
 [image5]: ./images/detection_example.png
 [image6]: ./images/heatmap.png
 [image7]: ./images/labels.png
-[image8]: ./images/boundingboxes.png
+[image8]: ./images/bounding_boxes.png
 [video1]: ./output_images/processed_project_video.mp4
 
 ### Please see the [rubric](https://review.udacity.com/#!/rubrics/513/view) points
@@ -115,12 +115,11 @@ I then used `scipy.ndimage.measurements.label()` to identify individual blobs in
 constructed bounding boxes to cover the area of each blob detected.  
 
 Here is an example result showing the heatmap from a series of 6 frames of video
+together with the corresponding output of `scipy.ndimage.measurements.label()` on the integrated and thresholded heatmap from all of the above six frames:
 ![HeatMap][image6]
-
-and here is the corresponding output of `scipy.ndimage.measurements.label()` on the integrated and thresholded heatmap from all of the above six frames:
 ![Labels][image7]
 
-Finally the resulting bounding boxes are drawn onto the last frame in the series:
+Finally the resulting bounding boxes are drawn onto the last frame in the series.
 ![BoundingBoxes][image8]
 
 
