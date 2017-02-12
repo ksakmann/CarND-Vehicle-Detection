@@ -14,7 +14,7 @@ The goals / steps of this project are the following:
 [//]: # (Image References)
 [image1]: ./images/car_notcar.png
 [image2]: ./images/HOG_features_HLS.png
-[image3]: ./examples/sliding_windows.jpg
+[image3]: ./images/false_positives.png
 [image4]: ./examples/sliding_window.jpg
 [image5]: ./examples/bboxes_and_heat.png
 [image6]: ./examples/labels_map.png
@@ -44,9 +44,10 @@ Shown below is an example of each class (vehicle, non-vehicle) of the data set. 
 Due to the temporal correlation in the video sequences, the training set was divided as follows: the first 70% of any folder containing images 
 was assigned to be the training set, the next 20% the validation set and the last 10% the test set. In the process of generating HOG features 
 all training, validation and test images were normalized together and subsequently split again into training, test and validation set. Each set was shuffled individually. The code for this step is contained in the first six cells of the IPython notebook `HOG_Classify.ipynb`. I explored different color spaces and different `skimage.hog()` parameters (`orientations`, `pixels_per_cell`, and `cells_per_block`).  
-I selected a few images from each of the two classes and displayed them to see  what the `skimage.hog()` output looks like. Here is an example using the `HLS` color space and HOG parameters of `orient=9`, `pixels_per_cell=(8, 8)` and `cells_per_block=(2, 2)`:
+I selected a few images from each of the two classes and displayed them to see  what the `skimage.hog()` output looks like. Here is an example using the `HLS` color space and HOG parameters of `orient=9`, `pixels_per_cell=(16, 16)` and `cells_per_block=(2, 2)`:
 
 ![HOGchannels][image2]
+
 
 ####2. Explain how you settled on your final choice of HOG parameters.
 
@@ -57,7 +58,19 @@ I finally settled with HLS space and a low value of `pixels_per_cell=(8,8)`. Usi
 ####3. Describe how (and identify where in your code) you trained a classifier using your selected HOG features (and color features if you used them).
 
 I trained a linear SVM using all channels of images converted to HLS space. I included spatial features color features as well as all three HLS channels. 
-The final feature vector has a length of 6156,  of which 5292 are HOG features. For color binning patches of `spatial_size=(16,16)` were generated and color histograms were implemented using `hist_bins=32` used. After  training on the training set this resulted in a validation accuracy of 98.0% and a test accuracy of 98.3% respectively. The average time for a prediction (average over a hundred predictions) turned out to be about 5ms on an i7 processor, thus allowing a theoretical bandwidth of  200Hz. A realtime application would therfore only feasible if several parts of the image are examined in parallel in a similar time. The sliding window search  described below is an embarrassingly parallel task and corresponding speedups are expected, but implementing it is beyond the scope of this project. Using just the L channel reduced the feature vector to about a third, while  test and validation accuracy dropped to about 94.5% each. Unfortunately, the average time for a prediction remained about 5ms. The classifier used was `LinearSVC` taken from the `scikit-learn` package.
+The final feature vector has a length of 1836, most of which are HOG features. For color binning patches of `spatial_size=(16,16)` were generated and color histograms 
+were implemented using `hist_bins=32` used. After  training on the training set this resulted in a validation and test accuracy of 98%. 
+The average time for a prediction (average over a hundred predictions) turned out to be about 3.3ms on an i7 processor, 
+thus allowing a theoretical bandwidth of  300Hz. A realtime application would therfore only feasible if several parts of the image are examined in parallel in a similar time. 
+The sliding window search  described below is an embarrassingly parallel task and corresponding speedups can be expected, but implementing it is beyond the scope of this project. 
+Using just the L channel reduced the feature vector to about a third, while  test and validation accuracy dropped to about 94.5% each. 
+Unfortunately, the average time for a prediction remained about the same as before. The classifier used was `LinearSVC` taken from the `scikit-learn` package.
+Despite the high accuracy there is a systematic error as can be seen from investigating the false positive detections. The false positives include  frequently occuring features, 
+such as side rails, line line markers etc. Shown below are some examples of false positives. 
+
+![FalsePositives][image3]
+
+
 
 ### Sliding Window Search
 #### 1. Describe how (and identify where in your code) you implemented a sliding window search.  How did you decide what scales to search and how much to overlap windows?
