@@ -15,7 +15,7 @@ The goals / steps of this project are the following:
 [image1]: ./images/car_notcar.png
 [image2]: ./images/HOG_features_HLS.png
 [image3]: ./images/false_positives.png
-[image4]: ./images/sliding_window.jpg
+[image4]: ./images/sliding_windows.png
 [image5]: ./examples/bboxes_and_heat.png
 [image6]: ./examples/labels_map.png
 [image7]: ./examples/output_bboxes.png
