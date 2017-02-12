@@ -16,7 +16,7 @@ The goals / steps of this project are the following:
 [image2]: ./images/HOG_features_HLS.png
 [image3]: ./images/false_positives.png
 [image4]: ./images/sliding_windows.png
-[image5]: ./examples/bboxes_and_heat.png
+[image5]: ./images/detection_example.png
 [image6]: ./examples/labels_map.png
 [image7]: ./examples/output_bboxes.png
 [video1]: ./project_video.mp4
@@ -75,21 +75,30 @@ such as side rails, line line markers etc. Shown below are some examples that il
 #### 1. Describe how (and identify where in your code) you implemented a sliding window search.  How did you decide what scales to search and how much to overlap windows?
 
 In the file `search_classify.ibynb` I  segmented the image into 4 partially overlapping zones with different sliding window sizes to account for different distances.
-The window sizes are  240,180,120 and 70 pixels for each zone and within each zone adjacent windows have an ovelap of 75%. See below for an example.
+The window sizes are  240,180,120 and 70 pixels for each zone. Within each zone adjacent windows have an ovelap of 75%, as illustrated below.
+The search over all zones is implemented in the `search_all_scales(image)` function. 
 
  
 ![SlidingWindows][image4]
 
 ####2. Show some examples of test images to demonstrate how your pipeline is working.  What did you do to try to minimize false positives and reliably detect cars?
 
-Ultimately I searched on two scales using YCrCb 3-channel HOG features plus spatially binned color and histograms of color in the feature vector, which provided a nice result.  Here are some example images:
+The final classifier uses four scales and HOG features from all 3 channels of images in HLS space. The feature vector contains also  spatially binned color and histograms of color features 
+False positives occured much more frequently for `pixels_per_cell=8` compared to `pixels_per_cell=16`. Using this larger value also had the pleasant side effect of a smaller 
+feature vector and sped up the evaluation. The remaining false positives 
+were filtered out by using a heatmap approach as described below. Here are some typical examples of detections
 
-![alt text][image4]
+![DetectionExamples][image5]
+
+False positives occur on the side of the road, but also simple lane lines get detected as cars from time to time. Cars driving in the opposite direction also get detected in so far as a
+significant portion is visible. 
+
 ---
 
 ### Video Implementation
 
 ####1. Provide a link to your final video output.  Your pipeline should perform reasonably well on the entire project video (somewhat wobbly or unstable bounding boxes are ok as long as you are identifying the vehicles most of the time with minimal false positives.)
+
 Here's a [link to my video result](./project_video.mp4)
 
 
