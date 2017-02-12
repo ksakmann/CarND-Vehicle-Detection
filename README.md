@@ -15,7 +15,7 @@ The goals / steps of this project are the following:
 [image1]: ./images/car_notcar.png
 [image2]: ./images/HOG_features_HLS.png
 [image3]: ./images/false_positives.png
-[image4]: ./examples/sliding_window.jpg
+[image4]: ./images/sliding_window.jpg
 [image5]: ./examples/bboxes_and_heat.png
 [image6]: ./examples/labels_map.png
 [image7]: ./examples/output_bboxes.png
@@ -66,18 +66,19 @@ The sliding window search  described below is an embarrassingly parallel task an
 Using just the L channel reduced the feature vector to about a third, while  test and validation accuracy dropped to about 94.5% each. 
 Unfortunately, the average time for a prediction remained about the same as before. The classifier used was `LinearSVC` taken from the `scikit-learn` package.
 Despite the high accuracy there is a systematic error as can be seen from investigating the false positive detections. The false positives include  frequently occuring features, 
-such as side rails, line line markers etc. Shown below are some examples of false positives. 
+such as side rails, line line markers etc. Shown below are some examples that illustrate this problem.  
 
 ![FalsePositives][image3]
-
 
 
 ### Sliding Window Search
 #### 1. Describe how (and identify where in your code) you implemented a sliding window search.  How did you decide what scales to search and how much to overlap windows?
 
-I decided to search random window positions at random scales all over the image and came up with this (ok just kidding I didn't actually ;):
+In the file `search_classify.ibynb` I  segmented the image into 4 partially overlapping zones with different sliding window sizes to account for different distances.
+The window sizes are  240,180,120 and 70 pixels for each zone and within each zone adjacent windows have an ovelap of 75%. See below for an example.
 
-![alt text][image3]
+ 
+![SlidingWindows][image4]
 
 ####2. Show some examples of test images to demonstrate how your pipeline is working.  What did you do to try to minimize false positives and reliably detect cars?
 
