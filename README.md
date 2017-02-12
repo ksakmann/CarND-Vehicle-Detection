@@ -1,4 +1,11 @@
-## Vehicle Detection
+# Vehicle Detection
+
+## Getting Started
+* Clone the project and create directories `vehicles` and `non-vehicles`. 
+* Download images from the links given below and put them into subfolders below `vehicles` and `non-vehicles`. 
+* `exploration.ipynb` splits the data into training, validation and test set and saves them in a pickle file.
+* `HOG_Classify.ipynb` trains an SVM to detect cars and non-cars. All classifier data is saved in  a pickle file.
+* `search_classify.ipynb` implements a sliding window search for cars, including false positive filtering and applies the classifier to a video
 
 **Project Description**
 
