@@ -18,7 +18,7 @@ The goals / steps of this project are the following:
 [image4]: ./images/sliding_windows.png
 [image5]: ./images/detection_example.png
 [image6]: ./images/heatmap.png
-[image7]: ./examples/output_bboxes.png
+[image7]: ./images/labels.png
 [video1]: ./output_images/processed_project_video.mp4
 
 ### Please see the [rubric](https://review.udacity.com/#!/rubrics/513/view) points
@@ -106,22 +106,22 @@ Please find the final result of the video processing pipeline [here](./output_im
 
 In the file `search_classify.ipynb` the class `BoundingBoxes` implements a FIFO queue that stores the bounding boxes of the last `n` frames. 
 For every frame the (possbly empty) list of detected bounding boxes gets added to the beginning of the queue, while the oldest list of bounding boxes falls out. 
-This queue is then used in the processing of the video and always contains the boundnig boxes of the last `n=` frames. I used  
+This queue is then used in the processing of the video and always contains the bounding boxes of the last `n=20` frames. On these a threshold of 20 was applied, which 
+suppresses also false positives from detected lane lines. Lane line positives together with false positives from rails on ht eside of the road proved very resistant 
+to augmenting the training set unfortunately
 of positive detections in each frame of the video. From the positive detections I created a heatmap and then thresholded that map to identify vehicle positions.  
 I then used `scipy.ndimage.measurements.label()` to identify individual blobs in the heatmap.  I then assumed each blob corresponded to a vehicle.  Finally I 
 constructed bounding boxes to cover the area of each blob detected.  
 
-Here's an example result showing the heatmap from a series of frames of video, the result of `scipy.ndimage.measurements.label()` and the bounding boxes then overlaid on the last frame of video:
+Here is an example result showing the heatmap from a series of 6 frames of video, the result of `scipy.ndimage.measurements.label()` 
+and the bounding boxes then overlaid on the last frame of video:
+![HeatMap][image6]
 
-### Here are six frames and their corresponding heatmaps:
+Here is the output of `scipy.ndimage.measurements.label()` on the integrated and thresholded heatmap from all of the above six frames:
+![Labels][image7]
 
-![heatmap][image6]
-
-### Here is the output of `scipy.ndimage.measurements.label()` on the integrated heatmap from all six frames:
-![alt text][image6]
-
-### Here the resulting bounding boxes are drawn onto the last frame in the series:
-![alt text][image7]
+Finally the resulting bounding boxes are drawn onto the last frame in the series:
+![BoundingBoxes][image8]
 
 
 
@@ -131,5 +131,15 @@ Here's an example result showing the heatmap from a series of frames of video, t
 
 ####1. Briefly discuss any problems / issues you faced in your implementation of this project.  Where will your pipeline likely fail?  What could you do to make it more robust?
 
-Here I'll talk about the approach I took, what techniques I used, what worked and why, where the pipeline might fail and how I might improve it if I were going to pursue this project further.  
+1. I started out with a linear SVM due to its fast evaluation. Nonlinear kernels such as `rbf` take not only longer to train, but also much longer to evaluate. Using the linear SVM I obtained 
+execution speeds of 3 FPS which is rather slow. However, there is ample room for improvement. At the moment the HOG features are computed for every single image which is inefficient. 
+A way to improve speed would be to compute the HOG features only once for the entire region of interest and then select the right feature vectors, when the image is slid across. 
+
+2. The evaluation of feature vectors is currently done sequentially, but could easily be parallelized, e.g. using OpenMP. However, this would require rewriting the code in C++.
+ 
+3. Some false positives still remain after heatmap filtering. This should be improvable by using more labeled data. 
+
+4. Another very interesting avenue would be to use a convolutional neural network, where it is easier to incorporate scale invariance.
+
+
 
