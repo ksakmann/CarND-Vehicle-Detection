@@ -115,8 +115,8 @@ I then used `scipy.ndimage.measurements.label()` to identify individual blobs in
 constructed bounding boxes to cover the area of each blob detected.  
 
 Here is an example result showing the heatmap from a series of 6 frames of video
-together with the corresponding output of `scipy.ndimage.measurements.label()` on the integrated and thresholded heatmap from all of the above six frames:
 ![HeatMap][image6]
+The above six frames are then integrated and thresholded. Using the output of `scipy.ndimage.measurements.label()` on this integrated  heatmap results in an image of labels:
 ![Labels][image7]
 
 Finally the resulting bounding boxes are drawn onto the last frame in the series.
