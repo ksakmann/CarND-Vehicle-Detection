@@ -1,9 +1,6 @@
-# Vehicle Detection
+# Vehicle Detection and Tracking
 
-
-
-
-# Introduction
+## Introduction
 
 Here we are going to use some hallmark techniques of classical computer vision (i.e. no deep learning) to see how far we can get in detecting and tracking vehicles. These are
 * a Histogram of Oriented Gradients (HOG) feature extraction on a labeled training set of images and train a Linear SVM classifier. 
@@ -32,8 +29,7 @@ This pipeline is then used to draw bounding boxes around the cars in the video.
 * `search_classify.ipynb` implements a sliding window search for cars, including false positive filtering and applies the classifier to a video
 What follows describes the pipeline above in more detail.
 
-
-### Please see the [rubric](https://review.udacity.com/#!/rubrics/513/view) points
+## Please see the [rubric](https://review.udacity.com/#!/rubrics/513/view) points
 
 ---
 # Data Exploration
