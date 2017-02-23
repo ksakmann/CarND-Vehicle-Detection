@@ -67,7 +67,7 @@ ffmpeg -i shortsolidYellowLeft1280x720.mp4 -vf fps=25 out%03d.png
 ## Extraction of HOG, color and spatial features
 
 Due to the temporal correlation in the video sequences, the training set was divided as follows: the first 70% of any folder containing images was assigned to be the training set, the next 20% the validation set and the last 10% the test set. In the process of generating HOG features all training, validation and test images were normalized together and subsequently split again into training, test and validation set. Each set was shuffled individually. The code for this step is contained in the first six cells of the IPython notebook `HOG_Classify.ipynb`. I explored different color spaces and different `skimage.hog()` parameters (`orientations`, `pixels_per_cell`, and `cells_per_block`).  
-I selected a few images from each of the two classes and displayed them to see  what the `skimage.hog()` output looks like. Here is an example using the `HLS` color space and HOG parameters of `orient=9`, `pixels_per_cell=(16, 16)` and `cells_per_block=(2, 2)`:
+I selected a few images from each of the two classes and displayed them to see  what the `skimage.hog()` output looks like. Here is an example using the `HLS` color space and HOG parameters of `orient=9`, `pixels_per_cell=(8, 8)` and `cells_per_block=(2, 2)`:
 
 ![HOGchannels][image2]
 
@@ -78,7 +78,7 @@ I experimented with a number of different combinations of color spaces and HOG p
 ## Training a linear SVM on the final choice of features
 
 I trained a linear SVM using all channels of images converted to HLS space. I included spatial features color features as well as all three HLS channels, because using less than all three channels reduced the accuracy considerably. 
-The final feature vector has a length of 1836, most of which are HOG features. For color binning patches of `spatial_size=(16,16)` were generated and color histograms 
+The final feature vector has a length of 6156, most of which are HOG features. For color binning patches of `spatial_size=(16,16)` were generated and color histograms 
 were implemented using `hist_bins=32` used. After  training on the training set this resulted in a validation and test accuracy of 98%.  The average time for a prediction (average over a hundred predictions) turned out to be about 3.3ms on an i7 processor, thus allowing a theoretical bandwidth of  300Hz. A realtime application would therfore only feasible if several parts of the image are examined in parallel in a similar time. 
 The sliding window search  described below is an embarrassingly parallel task and corresponding speedups can be expected, but implementing it is beyond the scope of this project. 
 Using just the L channel reduced the feature vector to about a third, while  test and validation accuracy dropped to about 94.5% each. Unfortunately, the average time for a prediction remained about the same as before. The classifier used was `LinearSVC` taken from the `scikit-learn` package.
