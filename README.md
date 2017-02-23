@@ -98,9 +98,8 @@ The window sizes are  240,180,120 and 70 pixels for each zone. Within each zone 
 
 ## Search examples
 The final classifier uses four scales and HOG features from all 3 channels of images in HLS space. The feature vector contains also  spatially binned color and histograms of color features 
-False positives occured much more frequently for `pixels_per_cell=8` compared to `pixels_per_cell=16`. Using this larger value also had the pleasant side effect of a smaller 
-feature vector and sped up the evaluation. The remaining false positives 
-were filtered out by using a heatmap approach as described below. Here are some typical examples of detections
+False positives occured  more frequently for `pixels_per_cell=8` compared to `pixels_per_cell=16`.   
+The  false positives were filtered out by using a heatmap approach as described below. Here are some typical examples of detections
 
 ![DetectionExamples][image5]
 
