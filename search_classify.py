@@ -18,6 +18,8 @@ from moviepy.editor import VideoFileClip
 from IPython.display import HTML
 from collections import deque
 from scipy.ndimage.measurements import label
+from IPython.core.debugger import Tracer; debug_here = Tracer()
+from tqdm import tqdm
 
 
 # Load the classifier and parameters
@@ -277,7 +279,7 @@ image = mpimg.imread(images[36])
 draw_img = draw_labeled_bboxes(np.copy(image), labels)
 # Display the image
 plt.imshow(draw_img)
-plt.show()
+#plt.show()
 
 
 
@@ -300,13 +302,17 @@ def process_image(image):
 
 
 
+# Video Processing
+print('Processing the video')
+
 out_dir='./output_images/'
 inpfile='project_video.mp4'
 outfile=out_dir+'processed_'+inpfile
 clip = VideoFileClip(inpfile)
 out_clip = clip.fl_image(process_image) 
-get_ipython().magic('time out_clip.write_videofile(outfile, audio=False)')
+tqdm(out_clip.write_videofile(outfile, audio=False))
 
+print('Done')
 
 # ## Images for Readme
 
