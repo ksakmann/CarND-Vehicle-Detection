@@ -1,8 +1,3 @@
-
-# coding: utf-8
-
-# In[1]:
-
 import matplotlib.image as mpimg
 import matplotlib.pyplot as plt
 import numpy as np
@@ -25,8 +20,6 @@ from collections import deque
 from scipy.ndimage.measurements import label
 
 
-# In[2]:
-
 # Load the classifier and parameters
 data_file = 'ClassifierData.p'
 with open(data_file, mode='rb') as f:
@@ -46,13 +39,7 @@ hist_feat = data['hist_feat']
 hog_feat = data['hog_feat']
 
 
-# In[3]:
-
 images = sorted(glob.glob('test_images/out*.png'))
-#images
-
-
-# In[4]:
 
 #image = mpimg.imread('bbox-example-image.png')
 # Uncomment the following line if you extracted training
@@ -64,17 +51,6 @@ def search_all_scales(image):
     
     hot_windows = []
     all_windows = []
-    #Y_start_stop =[[300,460]]
-    #XY_window = [(150,150)]
-    #X_start_stop =[[None,None]]    
-    #X_start_stop =[[None,None],[None,None],[None,None]]    
-    #Y_start_stop =[[390,440],[400,560],[400,560]]    
-    #XY_window = [(80,80),(110,110),(130,130)]
-
-    X_start_stop =[[None,None],[None,None]]    
-    Y_start_stop =[[390,470],[390,500]]    
-    XY_window = [(64,64),(110,110)]
-    XY_overlap=[(0.75, 0.75),(0.75, 0.75)]
 
     X_start_stop =[[None,None],[None,None],[None,None],[None,None]]
     w0,w1,w2,w3 = 240,180,120,70
@@ -101,8 +77,6 @@ def search_all_scales(image):
 
     return hot_windows,all_windows
 
-
-# In[5]:
 
 for file in images[43:44]:
     image = mpimg.imread(file)
@@ -143,8 +117,6 @@ for file in images[43:44]:
     #plt.savefig('images/sliding_windows.png')
 
 
-# In[6]:
-
 file0 = images[10]
 file1 = images[70]
 file2 = images[83]
@@ -168,12 +140,10 @@ for i, ax in enumerate(axes.flat):
     ax.set_yticks([])     
 
 plt.show()
-#plt.savefig('images/detection_example.png')
 
 
 # ## Video Pipeline
 
-# In[7]:
 
 # Define a class to receive the characteristics of bounding box detections
 class BoundingBoxes:
@@ -228,7 +198,6 @@ def apply_threshold(heatmap, threshold):
     return heatmap
 
 
-# In[8]:
 
 images = sorted(glob.glob('./heatmap/*.png'))
 boxes = BoundingBoxes(n=6)
@@ -280,15 +249,12 @@ for file in images[30:36]:
 plt.show()
 
 
-# In[9]:
-
 labels = label(heatmap)
 print(labels[1], 'cars found')
 plt.imshow(labels[0], cmap='gray')
 plt.show()
 
 
-# In[10]:
 
 def draw_labeled_bboxes(img, labels):
     # Iterate through all detected cars
@@ -314,7 +280,6 @@ plt.imshow(draw_img)
 plt.show()
 
 
-# In[13]:
 
 boxes = BoundingBoxes(n=30)
 
@@ -334,7 +299,6 @@ def process_image(image):
     return window_image
 
 
-# In[14]:
 
 out_dir='./output_images/'
 inpfile='project_video.mp4'
@@ -345,8 +309,6 @@ get_ipython().magic('time out_clip.write_videofile(outfile, audio=False)')
 
 
 # ## Images for Readme
-
-# In[ ]:
 
 heatmap_images = sorted(glob.glob('./heatmap/*.png'))
 boxes = BoundingBoxes(n=6)
@@ -393,16 +355,12 @@ for ind,file in enumerate(image_seq):
 plt.savefig('images/heatmap.png')    
 
 
-# In[ ]:
-
 plt.figure()
 labels = label(final_heatmap)
 print(labels[1], 'cars found')
 plt.imshow(labels[0], cmap='gray')
 plt.savefig('images/labels.png')
 
-
-# In[ ]:
 
 # Read in the last image above
 image = mpimg.imread(image_seq[-1])
@@ -415,8 +373,6 @@ plt.imshow(draw_img)
 #plt.show()
 plt.savefig('images/bounding_boxes.png')
 
-
-# In[ ]:
 
 
 

@@ -1,8 +1,3 @@
-
-# coding: utf-8
-
-# In[1]:
-
 import matplotlib.image as mpimg
 import matplotlib.pyplot as plt
 import numpy as np
@@ -15,8 +10,6 @@ from sklearn.preprocessing import StandardScaler
 from skimage.feature import hog
 from sklearn.model_selection import train_test_split
 
-
-# In[2]:
 
 # Loading + training,validation test split
 cars0 = glob.glob('./vehicles/GTI_Far/*.png')
@@ -46,13 +39,6 @@ cars_test = cars0[L2[0]:] + cars1[L2[1]:] + cars2[L2[2]:] + cars3[L2[3]:] + cars
 notcars_test = notcars1[L2[5]:]
 
 
-# In[3]:
-
-L1,L2
-
-
-# In[4]:
-
 print('Number of samples in cars training set: ', len(cars_train))
 print('Number of samples in notcars training set: ', len(notcars_train))
 
@@ -62,10 +48,6 @@ print('Number of samples in notcars validation set: ', len(notcars_val))
 print('Number of samples in cars test set: ',len(cars_test))
 print('Number of samples in notcars test set: ',len(notcars_test))
 
-
-# **Conclusion: The two classes are more or less balanced.**
-
-# In[5]:
 
 # Save the data for easy access
 pickle_file = 'data.p'
@@ -89,8 +71,6 @@ except Exception as e:
 print('Data cached in pickle file.')
 
 
-# In[6]:
-
 data_file = 'data.p'
 with open(data_file, mode='rb') as f:
     data = pickle.load(f)
@@ -101,16 +81,10 @@ notcars_val = data['notcars_val']
 cars_test = data['cars_test']
 notcars_test = data['notcars_test']
 
-
-# In[7]:
-
 i=22
 a_car = plt.imread(cars_train[i])
 not_a_car = plt.imread(notcars_train[i])
 cars_train[i],notcars_train[i]
-
-
-# In[8]:
 
 font_size=30
 f, (ax1, ax2) = plt.subplots(1, 2, figsize=(20,10))
@@ -123,8 +97,6 @@ plt.rc('ytick', labelsize=font_size)
 plt.show()
 
 
-# In[9]:
-
 f, (ax1, ax2) = plt.subplots(1, 2, figsize=(20,10))
 f, (ax1, ax2) = plt.subplots(1, 2, figsize=(20,10))
 ax1.imshow(a_car)
@@ -134,9 +106,5 @@ ax2.set_title('not a car', fontsize=font_size)
 plt.rc('xtick', labelsize=font_size) 
 plt.rc('ytick', labelsize=font_size) 
 plt.savefig('./images/car_notcar.png')
-
-
-# In[ ]:
-
 
 

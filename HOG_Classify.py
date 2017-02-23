@@ -1,8 +1,3 @@
-
-# coding: utf-8
-
-# In[1]:
-
 import matplotlib.image as mpimg
 import matplotlib.pyplot as plt
 import numpy as np
@@ -20,8 +15,6 @@ from sklearn.externals import joblib
 from lesson_functions import *
 
 
-# In[2]:
-
 # Load the training validation and test data
 data_file = 'data.p'
 with open(data_file, mode='rb') as f:
@@ -33,8 +26,6 @@ notcars_train = data['notcars_train']
 notcars_val   = data['notcars_val']
 notcars_test  = data['notcars_test']
 
-
-# In[3]:
 
 #helper function to extract features from files
 
@@ -54,8 +45,6 @@ def get_features(files, color_space='RGB', spatial_size=(32, 32),
         features.append(img_features)
     return features
 
-
-# In[4]:
 
 color_space = 'HLS' # Can be RGB, HSV, LUV, HLS, YUV, YCrCb
 spatial_size = (16, 16)
@@ -86,8 +75,6 @@ t2 = time.time()
 print(round(t2-t, 2), 'Seconds to extract HOG,spatial and color features...')
 
 
-# In[5]:
-
 # Create an array stack of feature vectors
 X = np.vstack((cars_train_feat,cars_val_feat,cars_test_feat,
                notcars_train_feat,notcars_val_feat,notcars_test_feat)).astype(np.float64)                        
@@ -96,8 +83,6 @@ X_scaler = StandardScaler().fit(X)
 # Apply the scaler to X
 scaled_X = X_scaler.transform(X)
 
-
-# In[6]:
 
 cars_ntrain=len(cars_train_feat)
 cars_nval=len(cars_val_feat)
@@ -128,8 +113,6 @@ X_val,y_val = shuffle(X_val,y_val,random_state=42)
 X_test,y_test = shuffle(X_test,y_test,random_state=42)
 
 
-# In[7]:
-
 print('Using:',orient,'orientations',pix_per_cell,'pixels per cell and', cell_per_block,'cells per block')
 print('Feature vector length:', len(X_train[0]))
 # Use a linear SVC 
@@ -155,8 +138,6 @@ print('For these',n_predict, 'labels: ', y_val[0:n_predict])
 t2 = time.time()
 print(round(t2-t, 5), 'Seconds to predict', n_predict,'labels with SVC')
 
-
-# In[18]:
 
 font_size=15
 f, axarr = plt.subplots(4, 7,figsize=(20,10))
@@ -227,8 +208,6 @@ plt.show()
 #plt.savefig('./images/HOG_features_YCrCb.png')
 
 
-# In[9]:
-
 # plot false positives/negatives
 font_size=15
 preds = svc.predict(cars_val_feat)
@@ -253,8 +232,6 @@ print('number of misclassified car images',len(misclassifieds))
 #plt.savefig('./images/false_negatives.png')
 
 
-# In[10]:
-
 fig, axes = plt.subplots(2,10,figsize=(20,5))
 fig.subplots_adjust(hspace=0.2, wspace=0.05)
     
@@ -274,8 +251,6 @@ plt.show()
 print('number of misclassified notcar images',len(misclassifieds))
 #plt.savefig('./images/false_positives.png')
 
-
-# In[11]:
 
 # Save the data for easy access
 pickle_file = 'ProcessedData.p'
@@ -323,9 +298,5 @@ except Exception as e:
     raise
 
 print('Data cached in pickle file.')
-
-
-# In[ ]:
-
 
 
