@@ -48,6 +48,20 @@ Shown below is an example of each class (vehicle, non-vehicle) of the data set. 
 ![sample][image1]
 
 
+At one point I was experimenting with augmenting the video from the Canny-Edge lane finding project, 
+but note that the [video](https://github.com/ksakmann/Canny-Edge-Lane-Line-Detector/blob/master/solidYellowLeft.mp4) is at a different resolution. 
+For resizing I used
+```
+ffmpeg -i solidYellowLeft.mp4 -vf scale=1280:720 solidYellowLeft1280x720.mp4
+```
+and for extracting images
+```
+ffmpeg -i shortsolidYellowLeft1280x720.mp4 -vf fps=25 out%03d.png
+```
+
+
+
+
 # Histogram of Oriented Gradients (HOG)
 
 ## Extraction of HOG, color and spatial features
