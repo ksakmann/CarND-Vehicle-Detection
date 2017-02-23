@@ -34,7 +34,10 @@ What follows describes the pipeline above in more detail.
 ---
 # Data Exploration
 Labeled images were taken from the GTI vehicle image database [GTI](http://www.gti.ssr.upm.es/data/Vehicle_database.html), the [KITTI](http://www.cvlibs.net/datasets/kitti/) 
-vision benchmark suite, and examples extracted from the project video itself. All images are 64x64 pixels. 
+vision benchmark suite, and examples extracted from the project video itself. Links to the training images, resized to 64x64 pixels can be found on the 
+[Udacity project website](https://github.com/udacity/CarND-Vehicle-Detection). [Here](https://s3.amazonaws.com/udacity-sdc/Vehicle_Tracking/vehicles.zip) is a currently working link 
+to the vehicle images and [here](https://s3.amazonaws.com/udacity-sdc/Vehicle_Tracking/non-vehicles.zip) one for the non-vehicle images.
+
 A third [data set](https://github.com/udacity/self-driving-car/tree/master/annotations) released by Udacity was not used here. 
 In total there are 8792 images of vehicles and 9666 images of non vehicles. 
 Thus the data is slightly unbalanced with about 10% more non vehicle images than vehicle images.
