@@ -7,6 +7,7 @@ Here we are going to use some hallmark techniques of classical computer vision (
 * a color transform and binned color features, as well as histograms of color, to combine the HOG feature vector with other classical computer vision approaches 
 * a sliding-window technique to search for cars with the trained SVM
 * creating a heatmap of recurring detections in subsequent framens of a video stream to reject outliers and follow detected vehicles.
+* finally we will compare our results to those of a YOLOv2, a blazingly fast neural network for object detection
 
 This pipeline is then used to draw bounding boxes around the cars in the video. 
 
@@ -34,10 +35,7 @@ What follows describes the pipeline above in more detail.
 ---
 # Data Exploration
 Labeled images were taken from the GTI vehicle image database [GTI](http://www.gti.ssr.upm.es/data/Vehicle_database.html), the [KITTI](http://www.cvlibs.net/datasets/kitti/) 
-vision benchmark suite, and examples extracted from the project video itself. Links to the training images, resized to 64x64 pixels can be found on the 
-[Udacity project website](https://github.com/udacity/CarND-Vehicle-Detection). [Here](https://s3.amazonaws.com/udacity-sdc/Vehicle_Tracking/vehicles.zip) is a currently working link 
-to the vehicle images and [here](https://s3.amazonaws.com/udacity-sdc/Vehicle_Tracking/non-vehicles.zip) one for the non-vehicle images.
-
+vision benchmark suite, and examples extracted from the project video itself. All images are 64x64 pixels. 
 A third [data set](https://github.com/udacity/self-driving-car/tree/master/annotations) released by Udacity was not used here. 
 In total there are 8792 images of vehicles and 9666 images of non vehicles. 
 Thus the data is slightly unbalanced with about 10% more non vehicle images than vehicle images.
@@ -48,26 +46,12 @@ Shown below is an example of each class (vehicle, non-vehicle) of the data set. 
 ![sample][image1]
 
 
-At one point I was experimenting with augmenting the video from the Canny-Edge lane finding project, 
-but note that the [video](https://github.com/ksakmann/Canny-Edge-Lane-Line-Detector/blob/master/solidYellowLeft.mp4) is at a different resolution. 
-For resizing I used
-```
-ffmpeg -i solidYellowLeft.mp4 -vf scale=1280:720 solidYellowLeft1280x720.mp4
-```
-and for extracting images
-```
-ffmpeg -i shortsolidYellowLeft1280x720.mp4 -vf fps=25 out%03d.png
-```
-
-
-
-
 # Histogram of Oriented Gradients (HOG)
 
 ## Extraction of HOG, color and spatial features
 
 Due to the temporal correlation in the video sequences, the training set was divided as follows: the first 70% of any folder containing images was assigned to be the training set, the next 20% the validation set and the last 10% the test set. In the process of generating HOG features all training, validation and test images were normalized together and subsequently split again into training, test and validation set. Each set was shuffled individually. The code for this step is contained in the first six cells of the IPython notebook `HOG_Classify.ipynb`. I explored different color spaces and different `skimage.hog()` parameters (`orientations`, `pixels_per_cell`, and `cells_per_block`).  
-I selected a few images from each of the two classes and displayed them to see  what the `skimage.hog()` output looks like. Here is an example using the `HLS` color space and HOG parameters of `orient=9`, `pixels_per_cell=(8, 8)` and `cells_per_block=(2, 2)`:
+I selected a few images from each of the two classes and displayed them to see  what the `skimage.hog()` output looks like. Here is an example using the `HLS` color space and HOG parameters of `orient=9`, `pixels_per_cell=(16, 16)` and `cells_per_block=(2, 2)`:
 
 ![HOGchannels][image2]
 
@@ -78,7 +62,7 @@ I experimented with a number of different combinations of color spaces and HOG p
 ## Training a linear SVM on the final choice of features
 
 I trained a linear SVM using all channels of images converted to HLS space. I included spatial features color features as well as all three HLS channels, because using less than all three channels reduced the accuracy considerably. 
-The final feature vector has a length of 6156, most of which are HOG features. For color binning patches of `spatial_size=(16,16)` were generated and color histograms 
+The final feature vector has a length of 1836, most of which are HOG features. For color binning patches of `spatial_size=(16,16)` were generated and color histograms 
 were implemented using `hist_bins=32` used. After  training on the training set this resulted in a validation and test accuracy of 98%.  The average time for a prediction (average over a hundred predictions) turned out to be about 3.3ms on an i7 processor, thus allowing a theoretical bandwidth of  300Hz. A realtime application would therfore only feasible if several parts of the image are examined in parallel in a similar time. 
 The sliding window search  described below is an embarrassingly parallel task and corresponding speedups can be expected, but implementing it is beyond the scope of this project. 
 Using just the L channel reduced the feature vector to about a third, while  test and validation accuracy dropped to about 94.5% each. Unfortunately, the average time for a prediction remained about the same as before. The classifier used was `LinearSVC` taken from the `scikit-learn` package.
@@ -98,8 +82,9 @@ The window sizes are  240,180,120 and 70 pixels for each zone. Within each zone 
 
 ## Search examples
 The final classifier uses four scales and HOG features from all 3 channels of images in HLS space. The feature vector contains also  spatially binned color and histograms of color features 
-False positives occured  more frequently for `pixels_per_cell=8` compared to `pixels_per_cell=16`.   
-The  false positives were filtered out by using a heatmap approach as described below. Here are some typical examples of detections
+False positives occured much more frequently for `pixels_per_cell=8` compared to `pixels_per_cell=16`. Using this larger value also had the pleasant side effect of a smaller 
+feature vector and sped up the evaluation. The remaining false positives 
+were filtered out by using a heatmap approach as described below. Here are some typical examples of detections
 
 ![DetectionExamples][image5]
 
@@ -133,6 +118,21 @@ Finally the resulting bounding boxes are drawn onto the last frame in the series
 ![BoundingBoxes][image8]
 
 
+##  Comparsion to YOLO
+While I was happy with the results of an SVM + HOG approach, I also wanted to check what a state of the art deep network could do. This comparison is anything but fair.
+We did not use the GPU at all in this project and I am shamelessly comparing apples and pears now. YOLO stands for "You only look once" and tiles an image into a modest number of squares.
+Each of the squares is responsible for predicting whether there is an object centered around it and if so predicting the shape of its bounding box, together with a confidence level.
+
+For the comparsion I cloned and compiled the original YOLO implementation from the [darknet](https://pjreddie.com/darknet/yolo/) website. 
+Please read more about YOLO [here](https://arxiv.org/abs/1506.02640). I used the weights of YOLOv2 trained on the Common Objects in Context dataset (COCO) which are also available at the darknet website. 
+Feeding in the project video on a GTX 1080 averages about 65 FPS or about 20x faster than the current SVM + HOG pipeline. Here is the result of passing the project video through YOLOv2:
+
+[yolo_result.avi](./output_images/yolo_result.avi).
+
+This is an extremely exciting result. Note that false positives are practically absent. So there is no need at all here for a heatmap, 
+although it certainly could be used to reduce any possible false positives. I vehicle detection with YOLO type networks are an exciting direction to 
+investigate for self-driving cars. Another direction would be to train YOLO on the Udacity training set linked to above. But these will be checked in different projects.
+
 
 ---
 
@@ -148,7 +148,6 @@ A way to improve speed would be to compute the HOG features only once for the en
  
 3. Some false positives still remain after heatmap filtering. This should be improvable by using more labeled data. 
 
-4. Another very interesting avenue would be to use a convolutional neural network like YOLO, where it is easier to incorporate scale invariance and perform real-time detection
 
 
 
