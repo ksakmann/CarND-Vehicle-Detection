@@ -20,7 +20,7 @@ This pipeline is then used to draw bounding boxes around the cars in the video.
 [image6]: ./images/heatmap.png
 [image7]: ./images/labels.png
 [image8]: ./images/bounding_boxes.png
-[image8]: ./images/yolo-hero.png
+[image9]: ./images/yolo-hero.png
 [video1]: ./output_images/processed_project_video.mp4
 
 # Getting Started
