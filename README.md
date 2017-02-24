@@ -121,16 +121,13 @@ Finally the resulting bounding boxes are drawn onto the last frame in the series
 
 ##  Comparsion to YOLO
 
-While I was happy with the results of an SVM + HOG approach, I also wanted to check what a state of the art deep network could do. This comparison is anything but fair.
-We did not use the GPU at all in this project and I am shamelessly comparing apples and pears now. YOLO stands for "You only look once" and tiles an image into a modest number of squares.
+While I was happy with the results of an SVM + HOG approach running at about 3FPS, I also wanted to check what a state of the art deep network could do. This comparison is anything but fair.
+We did not use the GPU at all for the SVM + HOG approach and I am shamelessly comparing apples and pears here. YOLO stands for "You only look once" and tiles an image into a modest number of squares.
 Each of the squares is responsible for predicting whether there is an object centered around it and if so predicting the shape of its bounding box, together with a confidence level.
-
 ![YOLOv2-result][image9]
-
 For comparsion I cloned and compiled the original YOLO implementation from the [darknet](https://pjreddie.com/darknet/yolo/) website. 
-Please read more about YOLO [here](https://arxiv.org/abs/1506.02640). I used the weights of YOLOv2 trained on the Common Objects in Context dataset (COCO) which are also available at the darknet website. 
-Feeding in the project video on a GTX 1080 averages about 65 FPS or about 20x faster than the current SVM + HOG pipeline.  
-Here is the result of passing the project video through YOLOv2: [yolo-result.avi](./output_images/yolo-result.avi).
+Please read more about YOLO [here](https://arxiv.org/abs/1506.02640). I used the weights of YOLOv2 trained on the Common Objects in Context dataset ([COCO](http://mscoco.org/)) which are also available at the darknet website. 
+Feeding in the project video on a GTX 1080 averages about 65 FPS or about 20x faster than the current SVM + HOG pipeline.  Here is the result of passing the project video through YOLOv2: [yolo-result.avi](./output_images/yolo-result.avi).
 
 This is a very exciting result. Note that false positives are practically absent. So there is no need at all here for a heatmap, 
 although it certainly could be used to reduce any possible false positives. I vehicle detection with YOLO type networks are an exciting direction to 
