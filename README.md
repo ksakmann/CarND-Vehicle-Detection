@@ -63,7 +63,7 @@ I experimented with a number of different combinations of color spaces and HOG p
 ## Training a linear SVM on the final choice of features
 
 I trained a linear SVM using all channels of images converted to HLS space. I included spatial features color features as well as all three HLS channels, because using less than all three channels reduced the accuracy considerably. 
-The final feature vector has a length of 1836, most of which are HOG features. For color binning patches of `spatial_size=(16,16)` were generated and color histograms 
+The final feature vector has a length of 6156 elements, most of which are HOG features. For color binning patches of `spatial_size=(16,16)` were generated and color histograms 
 were implemented using `hist_bins=32` used. After  training on the training set this resulted in a validation and test accuracy of 98%.  The average time for a prediction (average over a hundred predictions) turned out to be about 3.3ms on an i7 processor, thus allowing a theoretical bandwidth of  300Hz. A realtime application would therfore only feasible if several parts of the image are examined in parallel in a similar time. 
 The sliding window search  described below is an embarrassingly parallel task and corresponding speedups can be expected, but implementing it is beyond the scope of this project. 
 Using just the L channel reduced the feature vector to about a third, while  test and validation accuracy dropped to about 94.5% each. Unfortunately, the average time for a prediction remained about the same as before. The classifier used was `LinearSVC` taken from the `scikit-learn` package.
@@ -83,8 +83,7 @@ The window sizes are  240,180,120 and 70 pixels for each zone. Within each zone 
 
 ## Search examples
 The final classifier uses four scales and HOG features from all 3 channels of images in HLS space. The feature vector contains also  spatially binned color and histograms of color features 
-False positives occured much more frequently for `pixels_per_cell=8` compared to `pixels_per_cell=16`. Using this larger value also had the pleasant side effect of a smaller 
-feature vector and sped up the evaluation. The remaining false positives 
+False positives occured more frequently for `pixels_per_cell=8` compared to `pixels_per_cell=16`, but nevertheless produced better results when applied to the video. The false positives 
 were filtered out by using a heatmap approach as described below. Here are some typical examples of detections
 
 ![DetectionExamples][image5]
